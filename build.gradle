@@ -361,7 +361,7 @@ ext.obfuscateJar = { File jarFile, File mappingOut ->
                         (name.endsWith('.SF') || name.endsWith('.RSA') || name.endsWith('.DSA') || name.endsWith('.EC'))) {
                     // Drop signature files — renaming class entries invalidates their digests.
                 } else {
-                    // Resources verbatim: mapping.srg, webui/**, assets/**, fonts, mods.toml, pack.mcmeta.
+                    // Resources verbatim: mapping.srg, assets/**, fonts, mods.toml, pack.mcmeta.
                     zos.putNextEntry(new java.util.zip.ZipEntry(name)); zos.write(bytes); zos.closeEntry()
                 }
             }

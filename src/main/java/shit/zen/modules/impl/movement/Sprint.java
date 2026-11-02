@@ -1,27 +1,31 @@
 package shit.zen.modules.impl.movement;
 
-import java.util.HashMap;
-import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.screens.ChatScreen;
+import shit.zen.event.EventTarget;
 import shit.zen.event.impl.RotationEvent;
 import shit.zen.modules.Category;
 import shit.zen.modules.Module;
 import shit.zen.modules.impl.player.InventoryManager;
-import shit.zen.event.EventTarget;
 
-public class Sprint
-extends Module {
-    private final HashMap<String, String> keyMappings = new HashMap<>();
+public class Sprint extends Module {
     public Sprint() {
         super("Sprint", Category.MOVEMENT);
-        this.setEnabled(true);
+        setEnabled(true);
     }
 
     @EventTarget
-    public void onRotation(RotationEvent rotationEvent) {
-        if (GuiMove.INSTANCE.isEnabled() && InventoryManager.isPerformingAction) {
-            return;
+    public void onRotation(RotationEvent event) {
+        if (mc.player == null || mc.level == null || !mc.player.isAlive() || mc.player.isSpectator()) return;
+        GuiMove guiMove = GuiMove.INSTANCE;
+        if (guiMove != null && guiMove.isEnabled() && InventoryManager.isPerformingAction) return;
+        if (mc.screen != null && (mc.screen instanceof ChatScreen || guiMove == null || !guiMove.isEnabled())) return;
+
+        float threshold = mc.player.isUnderWater() ? 1.0E-5F : 0.8F;
+        boolean hasFood = mc.player.getFoodData().getFoodLevel() > 6 || mc.player.getAbilities().mayfly;
+        if (mc.player.zza > threshold && hasFood && !mc.player.isPassenger() && !mc.player.isShiftKeyDown()
+            && !mc.player.isUsingItem() && !mc.player.isFallFlying()
+            && (!mc.player.horizontalCollision || mc.player.minorHorizontalCollision)) {
+            mc.player.setSprinting(true);
         }
-        mc.options.toggleSprint().set(false);
-        KeyMapping.set(mc.options.keySprint.getKey(), true);
     }
 }

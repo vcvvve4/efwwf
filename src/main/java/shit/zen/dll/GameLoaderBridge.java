@@ -40,7 +40,7 @@ import org.apache.logging.log4j.Logger;
  *       loader; everything else is extracted to a temp directory and exposed
  *       via the {@code openzen.resources} system property so
  *       {@code Bootstrap} and {@code ZenClient} can still find their
- *       resources (mapping.srg, cloud assets, webui static files).</li>
+ *       resources (mapping.srg and cloud assets).</li>
  *   <li>Hand off to {@link DllBootstrap#start(String)} loaded through the
  *       game loader.</li>
  * </ol>
