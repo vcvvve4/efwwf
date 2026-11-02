@@ -36,7 +36,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 public class StructureESP extends Module {
     private final SettingGroup sg = settings.getDefaultGroup();
-    private final Setting<Boolean> loadedPois = sg.add(new BoolSetting.Builder().name("loaded-pois").description("Scan loaded block-state palettes for registered 26.2 POIs (beds, workstations, portals, etc.).").defaultValue(true).build());
+    private final Setting<Boolean> loadedPois = sg.add(new BoolSetting.Builder().name("loaded-pois").description("Scan loaded block-state palettes for registered POIs (beds, workstations, portals, etc.).").defaultValue(true).build());
     private final Setting<Boolean> debugData = sg.add(new BoolSetting.Builder().name("received-debug-data").description("Render structure/POI debug data only when actually sent by the server; sends no debug subscription requests.").defaultValue(true).build());
     private final Setting<List<Block>> markers = sg.add(new BlockListSetting.Builder().name("landmark-blocks").description("Additional loaded block markers. A block marker does not confirm a generated structure.").defaultValue(Blocks.SPAWNER, Blocks.TRIAL_SPAWNER, Blocks.VAULT, Blocks.SCULK_SHRIEKER).build());
     private final Setting<Integer> budget = sg.add(new IntSetting.Builder().name("blocks-per-tick").description("Maximum detailed block checks per tick; nonmatching palettes are skipped.").defaultValue(2048).range(256, 16384).sliderRange(256, 8192).build());
@@ -53,7 +53,7 @@ public class StructureESP extends Module {
     private ChunkAccess scanning;
     private int section, offset;
     private Object world;
-    public StructureESP() { super(Categories.Render, "structure-esp", "Loaded POI/landmark markers and server-sent 26.2 structure debug bounds. No hidden-data or seed inference."); }
+    public StructureESP() { super(Categories.Render, "structure-esp", "Loaded POI/landmark markers and server-sent structure debug bounds. No hidden-data or seed inference."); }
     private void clear() { points.clear(); structures.clear(); received.clear(); queue.clear(); scanning = null; section = offset = 0; world = mc.level; }
     @Override public void onActivate() { clear(); }
     @Override public void onDeactivate() { clear(); }

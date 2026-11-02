@@ -24,7 +24,7 @@ public class ShieldPredict extends Module {
     private final Setting<Boolean> hud = sg.add(new BoolSetting.Builder().name("target-readout")
         .description("Show observed hands and estimated blocking state for your target.").defaultValue(true).build());
 
-    public ShieldPredict() { super(Categories.Combat, "shield-predict", "Estimate shield raise timing from received item-use state, 26.2 blocking components and latency."); }
+    public ShieldPredict() { super(Categories.Combat, "shield-predict", "Estimate shield raise timing from received item-use state, blocking components and latency."); }
 
     public boolean blocks(LivingEntity entity) {
         if (!isActive() || !integrate.get()) return entity.isBlocking();

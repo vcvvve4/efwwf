@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 import it.unimi.dsi.fastutil.io.FastByteArrayOutputStream;
 import com.gaspoweredcake.client33.Client33;
 import net.minecraft.nbt.*;
+import java.io.DataInputStream;
 
 import java.util.*;
 import org.jspecify.annotations.Nullable;
@@ -82,7 +83,10 @@ public class NbtUtils {
             if (encoded.length() > MAX_CLIPBOARD_CHARS) throw new IllegalArgumentException("Clipboard NBT exceeds size limit");
             byte[] data = Base64.getDecoder().decode(encoded);
             var bis = new FastByteArrayInputStream(data);
-            return NbtIo.readCompressed(bis, NbtAccounter.create(MAX_CLIPBOARD_NBT_BYTES));
+            if (data.length >= 2 && (data[0] & 0xff) == 0x1f && (data[1] & 0xff) == 0x8b)
+                return NbtIo.readCompressed(bis, NbtAccounter.create(MAX_CLIPBOARD_NBT_BYTES));
+            // Older book-copy buttons wrote uncompressed NBT.
+            return NbtIo.read(new DataInputStream(bis), NbtAccounter.create(MAX_CLIPBOARD_NBT_BYTES));
         } catch (Exception e) {
             Client33.LOG.error("Invalid NBT data pasted!", e);
             return null;

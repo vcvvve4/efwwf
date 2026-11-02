@@ -170,7 +170,13 @@ ClamAV 1.5.4 scanned 6,650 distinct files extracted from a previous JAR and 77 n
 
 <!-- coderabbit-ai-generated-section:v1:7779b5076fa5c15373833ec535ee1b7727d9f3ee5c6524bccf3bd66482613259 -->
 
-Subsequent scans covered seven, 13, one, nine, two, 19 and nine changed files, all with zero detections; the replaced Gradle wrapper also had zero detections.
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:8a055a7803756f6b6d7b1a019e318eab1e6887bc05baee4b809f3a9cd40ac988 -->
+
+Subsequent scans covered seven, 13, one, nine, two, 19 and nine changed files, all with zero detections; the replaced Gradle wrapper also had zero detections. A further scan of 20 newly distinct entries from the current candidate found zero detections; the embedded JARs matched the prior candidate by SHA-256.
+
+<!-- /coderabbit-ai-generated:v1 -->
 
 <!-- /coderabbit-ai-generated:v1 -->
 
@@ -183,6 +189,14 @@ Subsequent scans covered seven, 13, one, nine, two, 19 and nine changed files, a
 <!-- /coderabbit-ai-generated:v1 -->
 
 <!-- /coderabbit-ai-generated:v1 -->
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:271f9bfe207e6892e290b3c606279b51a4ac1348b4bb6ff570484420455e1ac8 -->
+
+- Book clipboard imports previously used unbounded NBT decoding and could exhaust memory; copies and pastes now share a bounded decoder that also accepts older uncompressed exports. Page indexes are clamped.
+- When resource-pack spoofing was enabled, a malformed server-provided URL could throw while constructing the chat link. URLs are now validated before use and pack acceptance is tied to the originating connection.
 - No claim is made that all RATs, viruses or vulnerabilities have been found. No final combined release has been produced.
+
+<!-- /coderabbit-ai-generated:v1 -->
 
 <!-- /coderabbit-ai-generated:v1 -->

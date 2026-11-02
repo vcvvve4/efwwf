@@ -14,6 +14,7 @@ import com.gaspoweredcake.client33.utils.Utils;
 import com.gaspoweredcake.client33.utils.misc.text.RunnableClickEvent;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -31,6 +32,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ServerSpoof extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -72,14 +74,16 @@ public class ServerSpoof extends Module {
         .build()
     );
 
-    private MutableComponent msg;
-    public boolean silentAcceptResourcePack = false;
+    private final AtomicReference<MutableComponent> msg = new AtomicReference<>();
+    public volatile boolean silentAcceptResourcePack = false;
 
     public ServerSpoof() {
         super(Categories.Misc, "server-spoof", "Spoof client brand, resource pack and channels.");
 
         runInMainMenu = true;
     }
+
+    @Override public void onDeactivate() { msg.set(null); silentAcceptResourcePack = false; }
 
     @EventHandler
     private void onPacketSend(PacketEvent.Send event) {
@@ -119,50 +123,56 @@ public class ServerSpoof extends Module {
         event.connection.send(new ServerboundResourcePackPacket(packet.id(), ServerboundResourcePackPacket.Action.DOWNLOADED));
         event.connection.send(new ServerboundResourcePackPacket(packet.id(), ServerboundResourcePackPacket.Action.SUCCESSFULLY_LOADED));
 
-        msg = Component.literal("This server has ");
-        msg.append(packet.required() ? "a required " : "an optional ").append("resource pack. ");
+        MutableComponent message = Component.literal("This server has ");
+        message.append(packet.required() ? "a required " : "an optional ").append("resource pack. ");
+
+        URL parsedUrl = getParsedResourcePackUrl(packet.url());
+        if (parsedUrl == null) {
+            message.append("The resource pack URL is invalid.");
+            msg.set(message);
+            return;
+        }
 
         MutableComponent link = Component.literal("[Open URL]");
         link.setStyle(link.getStyle()
             .withColor(ChatFormatting.BLUE)
             .withUnderlined(true)
-            .withClickEvent(new ClickEvent.OpenUrl(URI.create(packet.url())))
+            .withClickEvent(new ClickEvent.OpenUrl(URI.create(parsedUrl.toExternalForm())))
             .withHoverEvent(new HoverEvent.ShowText(Component.literal("Click to open the pack url")))
         );
 
         MutableComponent acceptance = Component.literal("[Accept Pack]");
+        Connection sourceConnection = event.connection;
         acceptance.setStyle(acceptance.getStyle()
             .withColor(ChatFormatting.DARK_GREEN)
             .withUnderlined(true)
             .withClickEvent(new RunnableClickEvent(() -> {
-                URL url = getParsedResourcePackUrl(packet.url());
-                if (url == null) error("Invalid resource pack URL: " + packet.url());
-                else {
+                if (isActive() && mc.getConnection() != null && mc.getConnection().getConnection() == sourceConnection) {
                     silentAcceptResourcePack = true;
-                    mc.getDownloadedPackSource().pushPack(packet.id(), url, packet.hash());
+                    mc.getDownloadedPackSource().pushPack(packet.id(), parsedUrl, packet.hash());
                 }
             }))
             .withHoverEvent(new HoverEvent.ShowText(Component.literal("Click to accept and apply the pack.")))
         );
 
-        msg.append(link).append(" ");
-        msg.append(acceptance).append(".");
+        message.append(link).append(" ");
+        message.append(acceptance).append(".");
+        msg.set(message);
     }
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
-        if (!isActive() || !Utils.canUpdate() || msg == null) return;
-
-        info(msg);
-        msg = null;
+        if (!isActive() || !Utils.canUpdate()) return;
+        MutableComponent message = msg.getAndSet(null);
+        if (message != null) info(message);
     }
 
     private static URL getParsedResourcePackUrl(String url) {
         try {
-            URL uRL = new URI(url).toURL();
-            String string = uRL.getProtocol();
-            return !"http".equals(string) && !"https".equals(string) ? null : uRL;
-        } catch (MalformedURLException | URISyntaxException _) {
+            URI uri = new URI(url);
+            if (uri.getHost() == null || !("http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme()))) return null;
+            return uri.toURL();
+        } catch (MalformedURLException | URISyntaxException | IllegalArgumentException _) {
             return null;
         }
     }

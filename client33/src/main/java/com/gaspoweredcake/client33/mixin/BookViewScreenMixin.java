@@ -5,33 +5,25 @@
 
 package com.gaspoweredcake.client33.mixin;
 
-import it.unimi.dsi.fastutil.io.FastByteArrayOutputStream;
-import com.gaspoweredcake.client33.Client33;
+import com.gaspoweredcake.client33.utils.misc.NbtUtils;
 import com.gaspoweredcake.client33.gui.GuiThemes;
 import com.gaspoweredcake.client33.gui.screens.EditBookTitleAndAuthorScreen;
-import com.gaspoweredcake.client33.utils.player.ChatUtils;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.BookViewScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.MemoryUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.Base64;
 
 import static com.gaspoweredcake.client33.Client33.mc;
 
@@ -65,25 +57,7 @@ public abstract class BookViewScreenMixin extends Screen {
                 tag.put("pages", listTag);
                 tag.putInt("currentPage", currentPage);
 
-                FastByteArrayOutputStream bytes = new FastByteArrayOutputStream();
-                DataOutputStream out = new DataOutputStream(bytes);
-                try {
-                    NbtIo.write(tag, out);
-                } catch (IOException e) {
-                    Client33.LOG.error("Error writing the book to the output stream", e);
-                }
-
-                String encoded = Base64.getEncoder().encodeToString(bytes.toByteArray());
-
-                @SuppressWarnings("resource")
-                long available = MemoryStack.stackGet().getPointer();
-                long size = MemoryUtil.memLengthUTF8(encoded, true);
-
-                if (size > available) {
-                    ChatUtils.error("Could not copy to clipboard: Out of memory.");
-                } else {
-                    mc.keyboardHandler.setClipboard(encoded);
-                }
+                NbtUtils.toClipboard(tag);
             })
                 .pos(4, 4)
                 .size(120, 20)

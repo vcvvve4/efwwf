@@ -53,7 +53,7 @@ public class Http {
 
         private Request(Method method, String url) {
             try {
-                this.builder = HttpRequest.newBuilder().uri(new URI(url)).timeout(Duration.ofSeconds(30)).header("User-Agent", "33/26.2 (Fabric)");
+                this.builder = HttpRequest.newBuilder().uri(new URI(url)).timeout(Duration.ofSeconds(30)).header("User-Agent", "33/26.3 (Fabric)");
                 this.method = method;
             } catch (URISyntaxException e) {
                 throw new IllegalArgumentException(e);

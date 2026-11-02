@@ -5,9 +5,7 @@
 
 package com.gaspoweredcake.client33.mixin;
 
-import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
-import it.unimi.dsi.fastutil.io.FastByteArrayOutputStream;
-import com.gaspoweredcake.client33.Client33;
+import com.gaspoweredcake.client33.utils.misc.NbtUtils;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.BookEditScreen;
@@ -20,9 +18,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.Base64;
 import java.util.List;
 
 import static com.gaspoweredcake.client33.Client33.mc;
@@ -59,19 +54,7 @@ public abstract class BookEditScreenMixin extends Screen {
                 tag.put("pages", listTag);
                 tag.putInt("currentPage", currentPage);
 
-                FastByteArrayOutputStream bytes = new FastByteArrayOutputStream();
-                DataOutputStream out = new DataOutputStream(bytes);
-                try {
-                    NbtIo.write(tag, out);
-                } catch (IOException e) {
-                    Client33.LOG.error("Error writing the book to the output stream", e);
-                }
-
-                try {
-                    mc.keyboardHandler.setClipboard(Base64.getEncoder().encodeToString(bytes.toByteArray()));
-                } catch (OutOfMemoryError exception) {
-                    mc.keyboardHandler.setClipboard(exception.toString());
-                }
+                NbtUtils.toClipboard(tag);
             })
                 .pos(4, 4)
                 .size(120, 20)
@@ -80,37 +63,16 @@ public abstract class BookEditScreenMixin extends Screen {
 
         addRenderableWidget(
             new Button.Builder(Component.literal("Paste"), _ -> {
-                String clipboard = mc.keyboardHandler.getClipboard();
-                if (clipboard.isEmpty()) return;
-
-                byte[] bytes;
-                try {
-                    bytes = Base64.getDecoder().decode(clipboard);
-                } catch (IllegalArgumentException _) {
-                    return;
-                }
-                var in = new FastByteArrayInputStream(bytes);
-
-                try {
-                    CompoundTag tag = NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
-
-                    ListTag listTag = tag.getListOrEmpty("pages").copy();
-
-                    pages.clear();
-                    for (int i = 0; i < listTag.size(); ++i) {
-                        pages.add(listTag.getStringOr(i, ""));
-                    }
-
-                    if (pages.isEmpty()) {
-                        pages.add("");
-                    }
-
-                    currentPage = tag.getIntOr("currentPage", 0);
-
-                    updatePageContent();
-                } catch (IOException e) {
-                    Client33.LOG.error("Error reading the data from your clipboard", e);
-                }
+                CompoundTag tag = NbtUtils.fromClipboard();
+                if (tag == null || tag.getList("pages").isEmpty()) return;
+                ListTag listTag = tag.getListOrEmpty("pages");
+                List<String> replacement = new java.util.ArrayList<>();
+                for (int i = 0; i < listTag.size(); ++i) replacement.add(listTag.getStringOr(i, ""));
+                if (replacement.isEmpty()) replacement.add("");
+                pages.clear();
+                pages.addAll(replacement);
+                currentPage = Math.max(0, Math.min(tag.getIntOr("currentPage", 0), pages.size() - 1));
+                updatePageContent();
             })
                 .pos(4, 4 + 20 + 2)
                 .size(120, 20)

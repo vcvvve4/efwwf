@@ -37,6 +37,13 @@ public class CameraTweaks extends Module {
         .build()
     );
 
+    private final Setting<Boolean> noFront = sgGeneral.add(new BoolSetting.Builder()
+        .name("no-front")
+        .description("Skip the front-facing camera when changing perspective.")
+        .defaultValue(false)
+        .build()
+    );
+
     // Scrolling
 
     private final Setting<Boolean> scrollingEnabled = sgScrolling.add(new BoolSetting.Builder()
@@ -72,11 +79,17 @@ public class CameraTweaks extends Module {
     @Override
     public void onActivate() {
         distance = cameraDistance.get();
+        if (noFront.get() && mc.options.getCameraType() == CameraType.THIRD_PERSON_FRONT)
+            mc.options.setCameraType(CameraType.FIRST_PERSON);
     }
 
     @EventHandler
     private void onPerspectiveChanged(ChangePerspectiveEvent event) {
         distance = cameraDistance.get();
+        if (noFront.get() && event.perspective == CameraType.THIRD_PERSON_FRONT) {
+            mc.options.setCameraType(CameraType.FIRST_PERSON);
+            event.cancel();
+        }
     }
 
     @EventHandler
@@ -85,7 +98,7 @@ public class CameraTweaks extends Module {
             return;
 
         if (scrollSensitivity.get() > 0) {
-            distance -= event.value * 0.25 * (scrollSensitivity.get() * distance);
+            distance = Math.max(0, distance - event.value * 0.25 * (scrollSensitivity.get() * distance));
 
             event.cancel();
         }
