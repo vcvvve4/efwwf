@@ -72,7 +72,6 @@ import shit.zen.modules.impl.world.AutoPlay;
 import shit.zen.modules.impl.world.AutoTools;
 import shit.zen.modules.impl.world.Debugger;
 import shit.zen.modules.impl.world.Teams;
-import shit.zen.modules.impl.world.WebUI;
 import shit.zen.event.EventTarget;
 
 public class ModuleManager extends ClientBase {
@@ -150,7 +149,6 @@ public class ModuleManager extends ClientBase {
         this.register(new AutoTools());
         this.register(new Debugger());
         this.register(new Teams());
-        this.register(new WebUI());
     }
 
     public void register(Module module) {
