@@ -27,8 +27,20 @@ Install Fabric Loader for Minecraft 26.3, then put the built JAR in your Minecra
 
 ## Contribute
 
-Open issues and pull requests in the [33 repository](https://github.com/GasPoweredCake/33). Keep the existing license headers on source files and follow the surrounding code style.
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:6b05138ffc43c1c383d00e410e4cefd102045b172c207a7e8b00e81a90254eed -->
+
+Open issues and pull requests in the [33 repository](https://github.com/GasPoweredCake/33). Follow the surrounding code style.
+
+<!-- /coderabbit-ai-generated:v1 -->
 
 ## License
 
-33 is distributed under [GPL-3.0](LICENSE). Original copyright and source attribution remain in the source headers.
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:56a0bef31cc3cb798b89da3ff9f594abf2153bfe22873a054af365282661a4ea -->
+
+33 is distributed under [GPL-3.0](LICENSE). Original copyright and source attribution are recorded in [NOTICE](NOTICE).
+
+<!-- /coderabbit-ai-generated:v1 -->

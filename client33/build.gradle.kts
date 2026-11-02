@@ -225,6 +225,9 @@ tasks {
         from("LICENSE") {
             rename { "${it}_$archivesBaseName" }
         }
+        from("NOTICE") {
+            rename { "${it}_$archivesBaseName" }
+        }
 
         // Include launcher classes
         from(launcher.output)

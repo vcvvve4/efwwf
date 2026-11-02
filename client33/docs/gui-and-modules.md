@@ -261,7 +261,13 @@ Enable **Chest Stealer** in Misc or search for it, then open a single or double 
 <!-- coderabbit-ai-generated-section:v1:7d774336e2887a11c7b5b37193a9d564d206c5cafcd37ed4da7f75715c0b9e8c -->
 
 - **AutoEat** locks its food choice for the current eating session, honors food components and the blacklist, respects manual item use, and pauses while a screen is open. Full inventory search can borrow an occupied hotbar slot and restore its contents when the inventory still matches the session. It never moves items through an open container or occupied cursor. Manual inventory changes are preserved. AutoGap takes priority and releases AutoEat's resources before starting.
-- **AutoRod** uses a hotbar fishing rod or, if none is available, an egg or snowball from a configurable mouse button. It restores the selected slot only while it still owns it.
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:7db9c164939f772fe3cd885c23b81dc5bed333c417056dd8575ca04094a80d30 -->
+
+- **AutoRod** uses a hotbar fishing rod or, if none is available, an egg or snowball from a configurable mouse button. It yields to item use and other temporary slot swaps, and restores the selected slot only while it still owns it.
+
+<!-- /coderabbit-ai-generated:v1 -->
 - **Camera Tweaks** supports skipping front view and clamps scroll-adjusted distance at zero.
 
 <!-- /coderabbit-ai-generated:v1 -->

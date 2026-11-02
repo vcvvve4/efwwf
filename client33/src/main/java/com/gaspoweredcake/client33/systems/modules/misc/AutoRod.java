@@ -10,7 +10,10 @@ import com.gaspoweredcake.client33.settings.SettingGroup;
 import com.gaspoweredcake.client33.systems.modules.Categories;
 import com.gaspoweredcake.client33.systems.modules.Module;
 import com.gaspoweredcake.client33.systems.modules.Modules;
+import com.gaspoweredcake.client33.systems.modules.player.AutoEat;
+import com.gaspoweredcake.client33.systems.modules.player.AutoGap;
 import com.gaspoweredcake.client33.systems.modules.player.MiddleClickExtra;
+import com.gaspoweredcake.client33.utils.misc.input.Input;
 import com.gaspoweredcake.client33.utils.misc.input.KeyAction;
 import com.gaspoweredcake.client33.utils.player.InvUtils;
 import com.gaspoweredcake.client33.utils.player.SwingUtils;
@@ -39,6 +42,8 @@ public final class AutoRod extends Module {
     private void onClick(MouseClickEvent event) {
         if (event.action != KeyAction.Press || event.button() != button.get().code || mc.gui.screen() != null
             || mc.player == null || mc.gameMode == null || owner != null) return;
+        if (mc.player.isUsingItem() || Input.isPressed(mc.options.keyUse) || InvUtils.previousSlot != -1
+            || Modules.get().get(AutoEat.class).eating || Modules.get().get(AutoGap.class).isEating()) return;
         if (button.get() == Button.Middle && Modules.get().isActive(MiddleClickExtra.class)) return;
         int slot = find(Items.FISHING_ROD);
         if (slot < 0) {
@@ -72,7 +77,8 @@ public final class AutoRod extends Module {
     }
 
     private void restore() {
-        if (owner != null && mc.player == owner && previous >= 0 && owner.getInventory().getSelectedSlot() == borrowed)
+        if (owner != null && mc.player == owner && previous >= 0 && InvUtils.previousSlot == -1
+            && owner.getInventory().getSelectedSlot() == borrowed)
             InvUtils.swap(previous, false);
         clear();
     }
