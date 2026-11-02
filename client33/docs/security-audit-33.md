@@ -199,7 +199,13 @@ Subsequent scans covered seven, 13, one, nine, two, 19 and nine changed files, a
 
 <!-- coderabbit-ai-generated-section:v1:46549fa603c53d32e51f6fd50a020890ee17e361feb4912fb9acab03262e1876 -->
 
-- OSV returned no advisory matches for 18 queried direct Maven coordinates and versions from the candidate bundle. This does not cover unindexed advisories, Maven coordinates that OSV does not track, all nested dependencies, or dependency provenance.
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:851776a7b0a1a4afc5570f7e80c4dd5974cf47f2ed50925365759ba95d33f341 -->
+
+- OSV returned no advisory matches for 18 queried direct Maven coordinates and versions, and 48 additional queries covering nested Fabric API modules and Bobby libraries. This does not cover unindexed advisories, Maven coordinates that OSV does not track, all nested dependencies, or dependency provenance.
+
+<!-- /coderabbit-ai-generated:v1 -->
 - No claim is made that all RATs, viruses or vulnerabilities have been found. No final combined release has been produced.
 
 <!-- /coderabbit-ai-generated:v1 -->
