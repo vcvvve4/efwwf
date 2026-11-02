@@ -195,7 +195,14 @@ Subsequent scans covered seven, 13, one, nine, two, 19 and nine changed files, a
 
 - Book clipboard imports previously used unbounded NBT decoding and could exhaust memory; copies and pastes now share a bounded decoder that also accepts older uncompressed exports. Page indexes are clamped.
 - When resource-pack spoofing was enabled, a malformed server-provided URL could throw while constructing the chat link. URLs are now validated before use and pack acceptance is tied to the originating connection.
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:46549fa603c53d32e51f6fd50a020890ee17e361feb4912fb9acab03262e1876 -->
+
+- OSV returned no advisory matches for 18 queried direct Maven coordinates and versions from the candidate bundle. This does not cover unindexed advisories, Maven coordinates that OSV does not track, all nested dependencies, or dependency provenance.
 - No claim is made that all RATs, viruses or vulnerabilities have been found. No final combined release has been produced.
+
+<!-- /coderabbit-ai-generated:v1 -->
 
 <!-- /coderabbit-ai-generated:v1 -->
 
